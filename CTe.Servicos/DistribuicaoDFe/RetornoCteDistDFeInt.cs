@@ -52,6 +52,6 @@ namespace CTe.Servicos.DistribuicaoDFe
         public string RetornoStr { get; protected set; }
         public string RetornoCompletoStr { get; protected set; }
 
-        public new retDistDFeInt Retorno { get; set; }
+        public retDistDFeInt Retorno { get; set; }
     }
 }

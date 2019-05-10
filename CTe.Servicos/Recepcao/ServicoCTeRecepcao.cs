@@ -33,6 +33,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CTe.Classes;
 using CTe.Classes.Servicos.Recepcao;
 using CTe.Servicos.Factory;
@@ -47,7 +48,7 @@ namespace CTe.Servicos.Recepcao
     {
         public event EventHandler<AntesEnviarRecepcao> AntesDeEnviar;
 
-        public retEnviCte CTeRecepcao(int lote, List<CTeEletronico> cteEletronicosList)
+        public async Task<retEnviCte> CTeRecepcao(int lote, List<CTeEletronico> cteEletronicosList)
         {
             var instanciaConfiguracao = ConfiguracaoServico.Instancia;
 
@@ -80,7 +81,7 @@ namespace CTe.Servicos.Recepcao
 
             OnAntesDeEnviar(enviCte);
 
-            var retornoXml = webService.cteRecepcaoLote(enviCte.CriaRequestWs());
+            var retornoXml = await webService.cteRecepcaoLote(enviCte.CriaRequestWs());
 
             var retorno = retEnviCte.LoadXml(retornoXml.OuterXml, enviCte);
             retorno.SalvarXmlEmDisco();

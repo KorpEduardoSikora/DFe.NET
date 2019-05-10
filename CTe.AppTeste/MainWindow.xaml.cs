@@ -33,6 +33,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace CTe.AppTeste
@@ -94,39 +95,39 @@ namespace CTe.AppTeste
             _model.SalvarConfiguracoesXml();
         }
 
-        private void ConsultarStatusServico(object sender, RoutedEventArgs e)
+        private async void ConsultarStatusServico(object sender, RoutedEventArgs e)
         {
-            _model.ConsultarStatusServico2();
+            await _model.ConsultarStatusServico2();
         }
 
-        private void InutilizacaoDeNumeracao_Click(object sender, RoutedEventArgs e)
+        private async void InutilizacaoDeNumeracao_Click(object sender, RoutedEventArgs e)
         {
-            _model.InutilizacaoDeNumeracao();
+            await _model.InutilizacaoDeNumeracao();
         }
 
-        private void ConsultaPorProtocolo_Click(object sender, RoutedEventArgs e)
+        private async void ConsultaPorProtocolo_Click(object sender, RoutedEventArgs e)
         {
-            _model.ConsultaPorProtocolo();
+            await _model.ConsultaPorProtocolo();
         }
 
-        private void EventoCancelarCTe_Click(object sender, RoutedEventArgs e)
+        private async void EventoCancelarCTe_Click(object sender, RoutedEventArgs e)
         {
-            _model.EventoCancelarCTe();
+            await _model.EventoCancelarCTe();
         }
 
-        private void EventoDesacordoCTe_Click(object sender, RoutedEventArgs e)
+        private async void EventoDesacordoCTe_Click(object sender, RoutedEventArgs e)
         {
-            _model.EventoDesacordoCTe();
+            await _model.EventoDesacordoCTe();
         }
 
-        private void CartaCorrecao_Click(object sender, RoutedEventArgs e)
+        private async void CartaCorrecao_Click(object sender, RoutedEventArgs e)
         {
-            _model.CartaCorrecao();
+            await _model.CartaCorrecao();
         }
 
-        private void CriarEnviarCTe2_Click(object sender, RoutedEventArgs e)
+        private async void CriarEnviarCTe2_Click(object sender, RoutedEventArgs e)
         {
-            _model.CriarEnviarCTe2e3();
+            await _model.CriarEnviarCTe2e3();
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -134,19 +135,19 @@ namespace CTe.AppTeste
             _model.CarregarConfiguracoes();
         }
 
-        private void ConsultaPorNumeroRecibo_Click(object sender, RoutedEventArgs e)
+        private async void ConsultaPorNumeroRecibo_Click(object sender, RoutedEventArgs e)
         {
-            _model.ConsultaPorNumeroRecibo();
+            await _model.ConsultaPorNumeroRecibo();
         }
 
-        private void CriarEnviarAutomaticoCTe2_Click(object sender, RoutedEventArgs e)
+        private async void CriarEnviarAutomaticoCTe2_Click(object sender, RoutedEventArgs e)
         {
-            _model.CriarEnviarCTeConsultaReciboAutomatico2e3();
+            await _model.CriarEnviarCTeConsultaReciboAutomatico2e3();
         }
 
-        private void CTeDistribuicaoDFe_Click(object sender, RoutedEventArgs e)
+        private async void CTeDistribuicaoDFe_Click(object sender, RoutedEventArgs e)
         {
-            _model.DistribuicaoDFe();
+            await _model.DistribuicaoDFe();
         }
       
     }

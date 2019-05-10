@@ -43,6 +43,7 @@ using CTe.Servicos.Factory;
 using CTe.Utils.DistribuicaoDFe;
 using CTe.Utils;
 using DFe.Utils;
+using System.Threading.Tasks;
 
 
 namespace CTe.Servicos.DistribuicaoDFe
@@ -57,7 +58,7 @@ namespace CTe.Servicos.DistribuicaoDFe
         /// <param name="ultNSU">Último NSU recebido pelo Interessado</param>
         /// <param name="nSU">Número Sequencial Único</param>
         /// <returns>Retorna um objeto da classe CTeDistDFeInteresse com os documentos de interesse do CNPJ/CPF pesquisado</returns>
-        public RetornoCteDistDFeInt CTeDistDFeInteresse(string ufAutor, string documento, string ultNSU = "0", string nSU = "0")
+        public async Task<RetornoCteDistDFeInt> CTeDistDFeInteresse(string ufAutor, string documento, string ultNSU = "0", string nSU = "0")
         {
             var versaoServico = ConfiguracaoServico.Instancia.VersaoLayout;
 
@@ -106,7 +107,7 @@ namespace CTe.Servicos.DistribuicaoDFe
 
             SalvarArquivoXml(path, xmlConsulta);
 
-            XmlNode retorno = ws.Execute(dadosConsulta);
+            XmlNode retorno = await ws.Execute(dadosConsulta);
 
             var retornoXmlString = retorno.OuterXml;
 

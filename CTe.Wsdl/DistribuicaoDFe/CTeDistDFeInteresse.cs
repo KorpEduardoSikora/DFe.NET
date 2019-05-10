@@ -31,44 +31,94 @@
 /* Rua Comendador Francisco josé da Cunha, 111 - Itabaiana - SE - 49500-000     */
 /********************************************************************************/
 
-using CTe.Wsdl.Configuracao;
-using System.Web.Services;
-using System.Web.Services.Description;
-using System.Web.Services.Protocols;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using CTe.Utils.Enums;
+using CTe.Wsdl.Common;
+using CTe.Wsdl.Configuracao;
 
 namespace CTe.Wsdl.DistribuicaoDFe
 {
 
-    [WebServiceBinding(Name = "CTeDistribuicaoDFeSoap", Namespace = "http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe")]
-    public class CTeDistDFeInteresse : SoapHttpClientProtocol
+    public class CTeDistDFeInteresse
     {
+        //Envelope SOAP para envio
+        private SoapEnvelope soapEnvelope;
+
+        //Configurações do WSDL para estabelecimento da comunicação
+        private WsdlConfiguracao configuracao;
+
+        /// <summary>
+        /// Cria o cabeçalho do envelope a ser enviado e atribui as configurações do WSDL.
+        /// </summary>
+        /// <param name="configuracao"></param>
         public CTeDistDFeInteresse(WsdlConfiguracao configuracao)
         {
+            if (configuracao == null)
+                throw new ArgumentNullException();
 
-            SoapVersion = SoapProtocolVersion.Soap12;
-            Url = configuracao.Url;
-            Timeout = configuracao.TimeOut;
-            ClientCertificates.Add(configuracao.CertificadoDigital);
-
-            cteCabecMsg = new cteCabecMsg();
-            cteCabecMsg.versaoDados = configuracao.Versao;
-            cteCabecMsg.cUF = configuracao.CodigoIbgeEstado;
+            this.configuracao = configuracao;
+            soapEnvelope = new SoapEnvelope
+            {
+                head = new ResponseHead<cteCabecMsg>
+                {
+                    cteCabecMsg = new cteCabecMsg
+                    {
+                        versaoDados = configuracao.Versao,
+                        cUF = configuracao.CodigoIbgeEstado
+                    }
+                }
+            };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
 
-        [XmlAttribute(Namespace = "http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe")]
-        public cteCabecMsg cteCabecMsg { get; set; }
-
-        [SoapHeader("cteCabecMsg")]
-        [SoapDocumentMethod("http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe/cteDistDFeInteresse", RequestNamespace = "http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe", ResponseNamespace = "http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe", Use = SoapBindingUse.Literal, ParameterStyle = SoapParameterStyle.Wrapped)]
-        [WebMethod(MessageName = "cteDistDFeInteresse")]
-        [return: XmlElement(Namespace = "http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe")]
-        public XmlNode Execute([XmlElement(Namespace = "http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe")] XmlNode cteDadosMsg)
+        /// <summary>
+        /// Encapsula os dados da requisição no envelope por meio da serialização das partes e realiza a requisção ao Web Service.
+        /// </summary>
+        /// <param name="cteDadosMsg"></param>
+        /// <returns>XmlNode</returns>
+        public async Task<XmlNode> Execute(XmlNode cteDadosMsg)
         {
-            var results = Invoke("cteDistDFeInteresse", new object[] { cteDadosMsg });
-            return ((XmlNode)(results[0]));
+            soapEnvelope.body = new ResponseBody<XmlNode>
+            {
+                cteDadosMsg = cteDadosMsg
+            };
+            return await RequestBuilderAndSender.Execute(soapEnvelope, configuracao, Enums.TipoEvento.CTeDistribuicaoDFe, "cteDistDFeInteresse");
         }
-
     }
+    
+    /// <summary>
+    /// Classe base para a serealização no formato do envelope SOAP.
+    /// </summary>
+    [XmlRoot( ElementName = "Envelope", Namespace = "http://www.w3.org/2003/05/soap-envelope")]
+    public class SoapEnvelope: CommonSoapEnvelope
+    {
+        [XmlElement(ElementName = "Header", Namespace = "http://www.w3.org/2003/05/soap-envelope")]
+        public ResponseHead<cteCabecMsg> head { get; set; }
+
+        [XmlElement(ElementName = "Body", Namespace = "http://www.w3.org/2003/05/soap-envelope")]
+        public ResponseBody<XmlNode> body { get; set; }
+    }
+    
+    /// <summary>
+    /// Classe para o cabeçalho do Envelope SOAP
+    /// </summary>
+    public class ResponseHead<T>: CommonResponseHead
+    {
+        [XmlElement(Namespace = "http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe")]
+        public T cteCabecMsg { get; set; }
+    }
+
+    /// <summary>
+    /// Classe para o corpo do Envelope SOAP
+    /// </summary>
+    public class ResponseBody<T>: CommonResponseBody
+    {
+        [XmlElement(Namespace = "http://www.portalfiscal.inf.br/cte/wsdl/CTeDistribuicaoDFe")]
+        public T cteDadosMsg { get; set; }
+    }
+    
 }

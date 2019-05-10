@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CTe.Classes;
 using CTe.Classes.Servicos.Recepcao;
 using CTe.Classes.Servicos.Recepcao.Retorno;
@@ -10,11 +11,11 @@ namespace CTe.Servicos.EnviarCte
 {
     public class ServicoEnviarCte
     {
-        public RetornoEnviarCte Enviar(int lote, Classes.CTe cte)
+        public async Task<RetornoEnviarCte> Enviar(int lote, Classes.CTe cte)
         {
             ServicoCTeRecepcao servicoRecepcao = new ServicoCTeRecepcao();
 
-            retEnviCte retEnviCte = servicoRecepcao.CTeRecepcao(lote, new List<Classes.CTe> {cte});
+            retEnviCte retEnviCte = await servicoRecepcao.CTeRecepcao(lote, new List<Classes.CTe> {cte});
 
             if (retEnviCte.cStat != 103)
             {
@@ -23,7 +24,7 @@ namespace CTe.Servicos.EnviarCte
 
             ConsultaReciboServico servicoConsultaRecibo = new ConsultaReciboServico(retEnviCte.infRec.nRec);
 
-            retConsReciCTe retConsReciCTe = servicoConsultaRecibo.Consultar();
+            retConsReciCTe retConsReciCTe = await servicoConsultaRecibo.Consultar();
 
 
             cteProc cteProc = null;

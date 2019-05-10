@@ -31,6 +31,7 @@
 /* Rua Comendador Francisco josé da Cunha, 111 - Itabaiana - SE - 49500-000     */
 /********************************************************************************/
 
+using System.Threading.Tasks;
 using CTe.Classes.Servicos.Evento;
 using CTe.Classes.Servicos.Evento.Flags;
 using CteEletronico = CTe.Classes.CTe;
@@ -39,6 +40,6 @@ namespace CTe.Servicos.Eventos.Contratos
 {
     public interface IServicoController
     {
-        retEventoCTe Executar(CteEletronico cte, int sequenciaEvento, EventoContainer container, TipoEvento evento);
+        Task<retEventoCTe> Executar(CteEletronico cte, int sequenciaEvento, EventoContainer container, TipoEvento evento);
     }
 }

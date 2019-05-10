@@ -31,6 +31,7 @@
 /* Rua Comendador Francisco josé da Cunha, 111 - Itabaiana - SE - 49500-000     */
 /********************************************************************************/
 
+using System.Threading.Tasks;
 using CTe.Classes.Servicos.Recepcao.Retorno;
 using CTe.Servicos.Factory;
 using CTe.Utils.Extencoes;
@@ -46,14 +47,14 @@ namespace CTe.Servicos.ConsultaRecibo
             _recibo = recibo;
         }
 
-        public retConsReciCTe Consultar()
+        public async Task<retConsReciCTe> Consultar()
         {
             var consReciCTe = ClassesFactory.CriaConsReciCTe(_recibo);
             consReciCTe.ValidarSchema();
             consReciCTe.SalvarXmlEmDisco();
 
             var webService = WsdlFactory.CriaWsdlCteRetRecepcao();
-            var retornoXml = webService.cteRetRecepcao(consReciCTe.CriaRequestWs());
+            var retornoXml = await webService.cteRetRecepcao(consReciCTe.CriaRequestWs());
 
             var retorno = retConsReciCTe.LoadXml(retornoXml.OuterXml, consReciCTe);
             retorno.SalvarXmlEmDisco();

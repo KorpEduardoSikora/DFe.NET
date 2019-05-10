@@ -33,6 +33,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CTe.AppTeste.Dao;
 using CTe.AppTeste.Entidades;
@@ -600,13 +601,13 @@ namespace CTe.AppTeste
             ConfiguracaoServico.Instancia.DiretorioSalvarXml = config.DiretorioSalvarXml;
         }
 
-        public void ConsultarStatusServico2()
+        public async Task ConsultarStatusServico2()
         {
             var config = new ConfiguracaoDao().BuscarConfiguracao();
             CarregarConfiguracoes(config);
 
             var statusServico = new StatusServico();
-            var retorno = statusServico.ConsultaStatus();
+            var retorno = await statusServico.ConsultaStatus();
 
             OnSucessoSync(new RetornoEEnvio(retorno));
         }
@@ -619,14 +620,14 @@ namespace CTe.AppTeste
             SucessoSync.Invoke(this, e);
         }
 
-        public void ConsultaPorProtocolo()
+        public async Task ConsultaPorProtocolo()
         {
             var porChave = MessageBoxConfirmTuche("Sim = Por chave\nNão = Por arquivo xml");
             var chave = string.Empty;
 
             if (porChave == DialogResult.Yes)
             {
-                chave = InputBoxTuche("Digite a chave de acesso da MDF-e");
+                chave = InputBoxTuche("Digite a chave de acesso da CT-e");
             }
 
             if (porChave == DialogResult.No)
@@ -636,7 +637,7 @@ namespace CTe.AppTeste
 
             if (string.IsNullOrEmpty(chave))
             {
-                MessageBoxTuche("Ops.. Não a oque fazer sem uma chave de acesso");
+                MessageBoxTuche("Ops.. Não há o que fazer sem uma chave de acesso.");
                 return;
             }
 
@@ -645,7 +646,7 @@ namespace CTe.AppTeste
             CarregarConfiguracoes(config);
 
             var servicoConsultaProtocolo = new ConsultaProtcoloServico();
-            var retorno = servicoConsultaProtocolo.ConsultaProtocolo(chave);
+            var retorno = await servicoConsultaProtocolo.ConsultaProtocolo(chave);
 
 
             OnSucessoSync(new RetornoEEnvio(retorno));
@@ -654,7 +655,7 @@ namespace CTe.AppTeste
 
         private static void MessageBoxTuche(string mensagem, MessageBoxIcon icon = MessageBoxIcon.Information)
         {
-            MessageBox.Show(mensagem, @"MDF-e", MessageBoxButtons.OK, icon);
+            MessageBox.Show(mensagem, @"CT-e", MessageBoxButtons.OK, icon);
         }
 
         private string BuscarChave()
@@ -719,7 +720,7 @@ namespace CTe.AppTeste
         }
 
 
-        public void InutilizacaoDeNumeracao()
+        public async Task InutilizacaoDeNumeracao()
         {
             var config = new ConfiguracaoDao().BuscarConfiguracao();
             CarregarConfiguracoes(config);
@@ -739,12 +740,12 @@ namespace CTe.AppTeste
             );
 
             var statusServico = new InutilizacaoServico(configInutilizar);
-            var retorno = statusServico.Inutilizar();
+            var retorno = await statusServico.Inutilizar();
 
             OnSucessoSync(new RetornoEEnvio(retorno));
         }
 
-        public void ConsultaPorNumeroRecibo()
+        public async Task ConsultaPorNumeroRecibo()
         {
             var config = new ConfiguracaoDao().BuscarConfiguracao();
             CarregarConfiguracoes(config);
@@ -752,12 +753,12 @@ namespace CTe.AppTeste
             var numeroRecibo = InputBoxTuche("Número Recibo");
 
             var consultaReciboServico = new ConsultaReciboServico(numeroRecibo);
-            var retorno = consultaReciboServico.Consultar();
+            var retorno = await consultaReciboServico.Consultar();
 
             OnSucessoSync(new RetornoEEnvio(retorno));
         }
 
-        public void EventoCancelarCTe()
+        public async Task EventoCancelarCTe()
         {
             var config = new ConfiguracaoDao().BuscarConfiguracao();
             CarregarConfiguracoes(config);
@@ -775,12 +776,12 @@ namespace CTe.AppTeste
             var justificativa = InputBoxTuche("Justificativa mínimo 15 digitos vlw");
 
             var servico = new EventoCancelamento(cte, sequenciaEvento, protocolo, justificativa);
-            var retorno = servico.Cancelar();
+            var retorno = await servico.Cancelar();
 
             OnSucessoSync(new RetornoEEnvio(retorno));
         }
 
-        public void EventoDesacordoCTe()
+        public async Task EventoDesacordoCTe()
         {
             var config = new ConfiguracaoDao().BuscarConfiguracao();
             CarregarConfiguracoes(config);
@@ -792,12 +793,12 @@ namespace CTe.AppTeste
             var obs = InputBoxTuche("Observação (mínimo 15 digitos)");
 
             var servico = new EventoDesacordo(sequenciaEvento, chave, cnpj, indPres, obs);
-            var retorno = servico.Discordar();
+            var retorno = await servico.Discordar();
 
             OnSucessoSync(new RetornoEEnvio(retorno));
         }
 
-        public void CartaCorrecao()
+        public async Task CartaCorrecao()
         {
             var config = new ConfiguracaoDao().BuscarConfiguracao();
             CarregarConfiguracoes(config);
@@ -832,12 +833,12 @@ namespace CTe.AppTeste
             };
 
             var servico = new EventoCartaCorrecao(cte, sequenciaEvento, correcoes);
-            var retorno = servico.AdicionarCorrecoes();
+            var retorno = await servico.AdicionarCorrecoes();
 
             OnSucessoSync(new RetornoEEnvio(retorno));
         }
 
-        public void CriarEnviarCTe2e3()
+        public async Task CriarEnviarCTe2e3()
         {
             var config = new ConfiguracaoDao().BuscarConfiguracao();
             CarregarConfiguracoes(config);
@@ -1060,7 +1061,7 @@ namespace CTe.AppTeste
             // Evento executado antes do envio do CT-e para o WebService
             // servicoRecepcao.AntesDeEnviar += AntesEnviarLoteCte;
 
-            var retornoEnvio = servicoRecepcao.CTeRecepcao(int.Parse(numeroLote), new List<CteEletronico> { cteEletronico });
+            var retornoEnvio = await servicoRecepcao.CTeRecepcao(int.Parse(numeroLote), new List<CteEletronico> { cteEletronico });
 
             OnSucessoSync(new RetornoEEnvio(retornoEnvio));
 
@@ -1083,7 +1084,7 @@ namespace CTe.AppTeste
             return rand.Next(11111111, 99999999);
         }
 
-        public void CriarEnviarCTeConsultaReciboAutomatico2e3()
+        public async Task CriarEnviarCTeConsultaReciboAutomatico2e3()
         {
             var config = new ConfiguracaoDao().BuscarConfiguracao();
             CarregarConfiguracoes(config);
@@ -1305,7 +1306,7 @@ namespace CTe.AppTeste
             var servico = new ServicoEnviarCte();
 
 
-            var retorno = servico.Enviar(Convert.ToInt32(numeroLote), cteEletronico);
+            var retorno = await servico.Enviar(Convert.ToInt32(numeroLote), cteEletronico);
 
 
             string xmlRetorno = string.Empty;
@@ -1324,7 +1325,7 @@ namespace CTe.AppTeste
             new ConfiguracaoDao().SalvarConfiguracao(config);
         }
 
-        public void DistribuicaoDFe()
+        public async Task DistribuicaoDFe()
         {
             
             var config = new ConfiguracaoDao().BuscarConfiguracao();
@@ -1352,7 +1353,7 @@ namespace CTe.AppTeste
 
 
             var servicoCTe = new ServicoCTeDistribuicaoDFe();
-            var retornoCTeDistDFe = servicoCTe.CTeDistDFeInteresse(config.Empresa.SiglaUf.ToString(), cnpj, ultNSU: ultNSU, nSU: nsu);
+            var retornoCTeDistDFe = await servicoCTe.CTeDistDFeInteresse(config.Empresa.SiglaUf.ToString(), cnpj, ultNSU: ultNSU, nSU: nsu);
 
             OnSucessoSync(new RetornoEEnvio(retornoCTeDistDFe.EnvioStr, retornoCTeDistDFe.RetornoStr));
 

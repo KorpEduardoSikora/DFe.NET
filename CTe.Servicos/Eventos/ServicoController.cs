@@ -31,6 +31,7 @@
 /* Rua Comendador Francisco josé da Cunha, 111 - Itabaiana - SE - 49500-000     */
 /********************************************************************************/
 
+using System.Threading.Tasks;
 using CTe.Classes.Servicos.Evento;
 using CTe.Classes.Servicos.Evento.Flags;
 using CTe.Servicos.Eventos.Contratos;
@@ -43,12 +44,12 @@ namespace CTe.Servicos.Eventos
 {
     public class ServicoController : IServicoController
     {
-        public retEventoCTe Executar(CteEletronico cte, int sequenciaEvento, EventoContainer container, TipoEvento tipoEvento)
+        public async Task<retEventoCTe> Executar(CteEletronico cte, int sequenciaEvento, EventoContainer container, TipoEvento tipoEvento)
         {
-            return Executar(tipoEvento, sequenciaEvento, cte.Chave(), cte.infCte.emit.CNPJ, container);
+            return await Executar(tipoEvento, sequenciaEvento, cte.Chave(), cte.infCte.emit.CNPJ, container);
         }
                 
-        public retEventoCTe Executar(TipoEvento tipoEvento, int sequenciaEvento, string chave, string cnpj, EventoContainer container)
+        public async Task<retEventoCTe> Executar(TipoEvento tipoEvento, int sequenciaEvento, string chave, string cnpj, EventoContainer container)
         {
             var evento = FactoryEvento.CriaEvento(tipoEvento,sequenciaEvento,chave,cnpj,container);
             evento.Assina();
@@ -56,7 +57,7 @@ namespace CTe.Servicos.Eventos
             evento.SalvarXmlEmDisco();
 
             var webService = WsdlFactory.CriaWsdlCteEvento();
-            var retornoXml = webService.cteRecepcaoEvento(evento.CriaXmlRequestWs());
+            var retornoXml = await webService.cteRecepcaoEvento(evento.CriaXmlRequestWs());
 
             var retorno = retEventoCTe.LoadXml(retornoXml.OuterXml, evento);
             retorno.SalvarXmlEmDisco();

@@ -31,6 +31,7 @@
 /* Rua Comendador Francisco josé da Cunha, 111 - Itabaiana - SE - 49500-000     */
 /********************************************************************************/
 
+using System.Threading.Tasks;
 using CTe.Classes.Servicos.Consulta;
 using CTe.Servicos.Factory;
 using CTe.Utils.Extencoes;
@@ -39,14 +40,14 @@ namespace CTe.Servicos.ConsultaProtocolo
 {
     public class ConsultaProtcoloServico
     {
-        public retConsSitCTe ConsultaProtocolo(string chave)
+        public async Task<retConsSitCTe> ConsultaProtocolo(string chave)
         {
             var consSitCTe = ClassesFactory.CriarconsSitCTe(chave);
             consSitCTe.ValidarSchema();
             consSitCTe.SalvarXmlEmDisco();
 
             var webService = WsdlFactory.CriaWsdlConsultaProtocolo();
-            var retornoXml = webService.cteConsultaCT(consSitCTe.CriaRequestWs());
+            var retornoXml = await webService.cteConsultaCT(consSitCTe.CriaRequestWs());
 
             var retorno = retConsSitCTe.LoadXml(retornoXml.OuterXml, consSitCTe);
             retorno.SalvarXmlEmDisco(chave);

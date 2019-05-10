@@ -31,6 +31,7 @@
 /* Rua Comendador Francisco josé da Cunha, 111 - Itabaiana - SE - 49500-000     */
 /********************************************************************************/
 
+using System.Threading.Tasks;
 using CTe.Classes.Servicos.Evento;
 using CTe.Classes.Servicos.Evento.Flags;
 using CTe.Servicos.Factory;
@@ -54,11 +55,11 @@ namespace CTe.Servicos.Eventos
             _observacao = observacao;
         }
 
-        public retEventoCTe Discordar()
+        public async Task<retEventoCTe> Discordar()
         {
             var eventoDiscordar = ClassesFactory.CriaEvPrestDesacordo(_indicadorDesacordo, _observacao);
 
-            var retorno = new ServicoController().Executar(TipoEvento.Desacordo, _sequenciaEvento, _chave, _cnpj, eventoDiscordar);
+            var retorno = await new ServicoController().Executar(TipoEvento.Desacordo, _sequenciaEvento, _chave, _cnpj, eventoDiscordar);
 
             return retorno;
         }

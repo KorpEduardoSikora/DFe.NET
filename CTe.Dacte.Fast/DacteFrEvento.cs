@@ -33,7 +33,7 @@
 
 using System.IO;
 using FastReport;
-using FastReport.Export.Pdf;
+//using FastReport.Export.Pdf;
 using CTe.Classes;
 using CTe.Classes.Servicos.Consulta;
 
@@ -90,7 +90,7 @@ namespace CTe.Dacte.Fast
         /// <param name="modal">Se true, exibe a visualização em Modal. O modo modal está disponível apenas para WinForms</param>
         public void Visualizar(bool modal = true)
         {
-            Relatorio.Show(modal);
+            //Relatorio.Show(modal);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace CTe.Dacte.Fast
         /// <param name="modal">Se true, exibe a visualização em Modal. O modo modal está disponível apenas para WinForms</param>
         public void ExibirDesign(bool modal = false)
         {
-            Relatorio.Design(modal);
+            //Relatorio.Design(modal);
         }
 
         /// <summary>
@@ -110,9 +110,9 @@ namespace CTe.Dacte.Fast
         /// <param name="impressora">Passe a string com o nome da impressora para imprimir diretamente em determinada impressora. Caso contrário, a impressão será feita na impressora que estiver como padrão</param>
         public void Imprimir(bool exibirDialogo = true, string impressora = "")
         {
-            Relatorio.PrintSettings.ShowDialog = exibirDialogo;
-            Relatorio.PrintSettings.Printer = impressora;
-            Relatorio.Print();
+            //Relatorio.PrintSettings.ShowDialog = exibirDialogo;
+            //Relatorio.PrintSettings.Printer = impressora;
+            //Relatorio.Print();
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace CTe.Dacte.Fast
         public void ExportarPdf(string arquivo)
         {
             Relatorio.Prepare();
-            Relatorio.Export(new PDFExport(), arquivo);
+            //Relatorio.Export(new PDFExport(), arquivo);
         }
     }
 }
